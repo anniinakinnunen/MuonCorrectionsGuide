@@ -14,6 +14,8 @@ In the MuonCorrectionsTool, the Run1 Rochester Corrections are added to two data
 
 In the `Test` directory you can find `Analysis.C`, which is the example code for adding the corrections. The main function of `Analysis.C` is simply used for calling the `applyCorrections` function which takes as a parameter the name of the ROOT-file (without the .root-part), path to the ROOT-file and a boolean value of whether the file contains data (`true`) or MC (`false`).
 
+_ADD TREENAME PARAMETER & CORRECT ALL PARAMETER_
+
 ```
 void Analysis::main()
 {
@@ -153,3 +155,10 @@ The second thing you need to do is check the names and data types of the branche
 ```
 
 ## Correcting the dataset without making selections
+
+The MuonCorrectionsTool plot 
+
+Note that you don't need the `Muon_eta_pos` and `Muon_eta_neg` branches if you are not making the plot in MuonCorrectionsTool.
+If you are not making the MuonCorrectionsTool plot and don't need to limit the muons to μ+μ- pairs, you can simply change the first `if` to `if (nMuon > 0)` and comment the second `if`. You should then also comment the invariant mass -lines. 
+Again, you can comment the section about positive and negative muons' eta branches if you are creating the plot.
+Again, you can comment the invariant mass section if needed.
