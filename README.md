@@ -158,11 +158,8 @@ The second thing you need to do is check the names and data types of the branche
 
 ## Correcting the dataset without making selections
 
-The MuonCorrectionsTool plot 
+If you want to correct all muons without making the selections needed for the MuonCorrectionsTool plot, simply give `true` as the last parameter when calling `applyCorrections`. The code will then loop through the events, select events with muons and correct the muons.
 
-Note that you don't need the `Muon_eta_pos` and `Muon_eta_neg` branches if you are not making the plot in MuonCorrectionsTool.
-If you are not making the MuonCorrectionsTool plot and don't need to limit the muons to μ+μ- pairs, you can simply change the first `if` to `if (nMuon > 0)` and comment the second `if`. You should then also comment the invariant mass -lines. 
-Again, you can comment the section about positive and negative muons' eta branches if you are creating the plot.
-Again, you can comment the invariant mass section if needed.
+## Using an older version of ROOT
 
-_CHANGE ROCHCOR2012WASYM_OLD.H INSTRUCTIONS, CHANGE IN ROCHCOR2012WASYM.CC_
+This code was written using the ROOT version 6.22.08. If you are using an older version, you might get errors running the code. In this case, try using `rochcor2012wasym_old.h` instead of `rochcor2012wasym.h`. You can do this by changing the first line of `rochcor2012.cc` to `#include "rochcor2012wasym_old.h"`.
