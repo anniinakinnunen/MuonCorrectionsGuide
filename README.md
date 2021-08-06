@@ -28,7 +28,7 @@ void Analysis::main()
 The first thing applyCorrections does is create a TTree from the ROOT-file. Then variables for holding the values read from the tree are created and branch addresses are set so that the variables are populated when looping over events. An output file, new branches for the corrected values and a few variables needed for the corrections are also created.
 
 ```
-int applyCorrections(string filename, string pathToFile, bool isData) {
+int applyCorrections(string filename, string pathToFile, string treeName, bool isData, bool correctAll) {
   // Create TTree from ROOT file
   TFile *f1 = TFile::Open((pathToFile).c_str());
   TTree *DataTree = (TTree*)f1->Get("Events");
@@ -77,7 +77,7 @@ Next, the events in the TTree are looped over and the corrections are applied to
 
 Whether all muons or only selected ones are being corrected, it is done in the loop below that loops over all the muons in an event and applies the corrections. The functions for applying the Rochester Corrections take as a parameter a TLorentzVector, which is a four-vector that describes the muons momentum and energy. A TLorentzVector is created for each muon using the muon's pt, eta, phi and mass. As mentioned earlier, the muon momentum scale corrections are different for data and MC and therefore there are separate functions for both: `momcor_data` and `momcor_mc`. These functions can be found in `rochcor2012wasym.cc` if you want to take a closer look at them.
 
-The corrected values are stored in the same TLorentzVectors after calling the correction functions. The values are then extracted from the TLorentzVecotrs and saved to the new variables.
+The corrected values are stored in the same TLorentzVectors after calling the correction functions. The values are then extracted from the TLorentzVecotrs and saved to the new variables. The new TTree is then filled with the new values.
 
 ```
         // Loop over muons in event
@@ -99,6 +99,8 @@ The corrected values are stored in the same TLorentzVectors after calling the co
           Muon_phi_cor[i] = mu.Phi();
           Muon_mass_cor[i] = mu.M();
         }
+        
+        DataTreeCor->Fill();
 ```
 
 When only the selected muons are being corrected, the code does more than just apply the corrections. Both the uncorrected and corrected invariant mass of μ<sup>+</sup>μ<sup>-</sup> is computed and saved to a branch. The MuonCorrectionsTool plot is made in bins of eta of μ<sup>+</sup> and eta of μ<sup>-</sup> and new branches are filled for those variables.
@@ -106,42 +108,23 @@ When only the selected muons are being corrected, the code does more than just a
 ```
           // Compute invariant mass of the dimuon system
           Dimuon_mass = computeInvariantMass(Muon_pt[0], Muon_pt[1], Muon_eta[0], Muon_eta[1], Muon_phi[0], Muon_phi[1], Muon_mass[0], Muon_mass[1]);
-          std::cout << "Dimuon_mass: " << Dimuon_mass << std::endl;
-          bDimuon_mass->Fill();
 
           // Choose positive and negative muons' etas
           if (Muon_charge[0] > 0) {
             Muon_eta_pos = Muon_eta[0];
             Muon_eta_neg = Muon_eta[1];
-            std::cout << "Eta_pos: " << Muon_eta_pos << std::endl;
           } else {
             Muon_eta_pos = Muon_eta[1];
             Muon_eta_neg = Muon_eta[0];
-            std::cout << "Eta_neg: " << Muon_eta_neg << std::endl;
           }
-
-          bMuon_eta_pos->Fill();
-          bMuon_eta_neg->Fill();
           
           // Compute invariant mass of the corrected dimuon system
           Dimuon_mass_cor = computeInvariantMass(Muon_pt_cor[0], Muon_pt_cor[1], Muon_eta_cor[0], Muon_eta_cor[1], Muon_phi_cor[0], Muon_phi_cor[1], Muon_mass_cor[0], Muon_mass_cor[1]);
-          std::cout << "Dimuon_mass_cor: " << Dimuon_mass_cor << std::endl;
-          bDimuon_mass_cor->Fill();
 ```
 
-Finally, the corrected values are saved to the new branches and the output tree is filled and written to the output file.
+Finally, the new TTree is written to the output file.
 
 ```
-    // Fill the branches with corrected values
-    bMuon_pt_cor->Fill();
-    bMuon_eta_cor->Fill();
-    bMuon_phi_cor->Fill();
-    bMuon_mass_cor->Fill();
-
-    //Fill the corrected values to the new tree
-    DataTreeCor->Fill();
-  }
-
   std::cout << "Writing tree to ouput file" << std::endl;
 
   //Save the new tree
@@ -150,13 +133,13 @@ Finally, the corrected values are saved to the new branches and the output tree 
 
 ## Applying the corrections to a different dataset
 
-You can use the example code to apply the corrections to different datasets. However, a few changes needs to be made for the code to work correctly. The first thing that needs to be changed is of course the function call in the main function. Call `applyCorrections` using the parameters that correspond your dataset. Remember for the last parameter that `true` means your ROOT file contains data and `false` means it contains MC.
+You can use the example code to apply the corrections to different datasets. However, a few changes needs to be made for the code to work correctly. The first thing that needs to be changed is of course the function call in the main function. Call `applyCorrections` using the parameters that correspond your dataset. Remember that for the first boolean parameter `true` means your ROOT file contains data and `false` means it contains MC. For the last parameter, `true` means you want to correct all muons without making selections and `false` means you want to make the selections needed for the MuonCorrectionsTool plot.
 
 ```
 void Analysis::main()
 {
   // Your dataset
-  applyCorrections("NameOfYourRootFile", "PathToYourRootFile", true/false);
+  applyCorrections("nameOfFile", "pathToFile", "treeName", isData, correctAll);
 }
 ```
 
