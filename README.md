@@ -25,7 +25,7 @@ void Analysis::main()
 }
 ```
 
-The first thing applyCorrections does is create a TTree from the ROOT-file. Then variables for holding the values read from the tree are created and branch addresses are set so that the variables are populated when looping over events. An output file, new branches for the corrected values and a few variables needed for the corrections are also created.
+The first thing `applyCorrections` does is create a TTree from the ROOT-file. Then variables for holding the values read from the tree are created and branch addresses are set so that the variables are populated when looping over events. An output file, new branches for the corrected values and a few variables needed for the corrections are also created.
 
 ```
 int applyCorrections(string filename, string pathToFile, string treeName, bool isData, bool correctAll) {
