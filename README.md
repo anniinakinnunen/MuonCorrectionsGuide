@@ -131,6 +131,31 @@ Finally, the new TTree is written to the output file.
   DataTreeCor->Write();
 ```
 
+## Running the code
+
+1. Open ROOT in terminal
+```
+root
+```
+
+2. Compile `muresolution.cc`, `rochcor2012wasym.cc` and `Analysis.C`
+```
+.L RochesterCorrections/muresolution.cc++
+.L RochesterCorrections/rochcor2012wasym.cc++
+.L RochesterCorrections/Test/Analysis.C+
+```
+
+3. Run the main function
+```
+Analysis pf
+pf.main()
+```
+4. Compile `Plot.C` and run the main function
+```
+.L RochesterCorrections/Test/Plot.C+
+main()
+```
+
 ## Applying the corrections to a different dataset
 
 You can use the example code to apply the corrections to different datasets. However, a few changes needs to be made for the code to work correctly. The first thing that needs to be changed is of course the function call in the main function. Call `applyCorrections` using the parameters that correspond your dataset. Remember that for the first boolean parameter `true` means your ROOT file contains data and `false` means it contains MC. For the last parameter, `true` means you want to correct all muons without making selections and `false` means you want to make the selections needed for the MuonCorrectionsTool plot.
