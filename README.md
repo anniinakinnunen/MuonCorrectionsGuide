@@ -150,7 +150,7 @@ root
 Analysis pf
 pf.main()
 ```
-4. Compile `Plot.C` and run the main function
+4. To create the plot, compile `Plot.C` and run the main function
 ```
 .L RochesterCorrections/Test/Plot.C+
 main()
